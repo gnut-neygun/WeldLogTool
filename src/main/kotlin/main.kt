@@ -11,7 +11,7 @@ import javax.swing.UIManager
 fun main() {
     UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel") //Set the theme for the file picker
     Window(
-        title = "CSV-PDF-App",
+        title = "Swagelok Munich Weld Log Tool",
         icon = ImageIO.read({}::class.java.getResource("app-icon.png")),
         resizable = true,
         size = IntSize(700, 700)

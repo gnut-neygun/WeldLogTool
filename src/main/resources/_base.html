@@ -22,9 +22,6 @@
 
         @page {
             size: a4 landscape;
-            @top-right {
-                content: 'Seite ' counter(page) ' von ' counter(pages);
-            }
             @top-center {
                 content: element(header);
             }
@@ -37,8 +34,20 @@
             margin-right: 1em;
         }
 
+        #page_number:before {
+            content: counter(page);
+        }
+
+        #page_count:before {
+            content: counter(pages);
+        }
+
         header {
             position: running(header);
+        }
+
+        table {
+            -fs-table-paginate: paginate;
         }
 
         #footer {
@@ -93,6 +102,8 @@
         /*Table label*/
         .info-table td:nth-child(odd) {
             width: 8%;
+            padding-right: 40px;
+            white-space: nowrap;
         }
 
         /*Table data*/
@@ -169,7 +180,8 @@
         QMV xxx<br/>
         CN <br/>
         Version 1.0 <br/>
-        Datum: <span th:text="${#dates.format(standardDate, 'dd-MMMyyyy')}"></span>
+        Datum <span th:text="${#dates.format(standardDate, 'dd-MMMyyyy')}"></span> <br/>
+        Seite <span id="page_number"></span> von <span id="page_count"></span>
     </div>
 </header>
 <div id="footer">
@@ -234,20 +246,23 @@
 <main>
     <div class="welding-table">
         <table>
+            <thead>
             <tr id="table-label">
-                <td>Schweißung#</td>
-                <td>Datum</td>
-                <td>Zeit</td>
-                <td>Schweisser ID</td>
-                <td>Beschreibung</td>
-                <td>Komponenten</td>
-                <td>AD/Wandstärke #1</td>
-                <td>HEAT #1</td>
-                <td>AD/Wandstärke #2</td>
-                <td>HEAT #2</td>
-                <td>Prüfmethode</td>
-                <td>Kommentare</td>
+                <th>Schweißung#</th>
+                <th>Datum</th>
+                <th>Zeit</th>
+                <th>Schweisser ID</th>
+                <th>Beschreibung</th>
+                <th>Komponenten</th>
+                <th>AD/Wandstärke #1</th>
+                <th>HEAT #1</th>
+                <th>AD/Wandstärke #2</th>
+                <th>HEAT #2</th>
+                <th>Prüfmethode</th>
+                <th>Kommentare</th>
             </tr>
+            </thead>
+            <tbody>
             <tr th:each="weld : ${entries}">
                 <td th:text="${weld[2]}">Schweißung#</td>
                 <td class="datum_column" th:text="${weld[0]}">Datum</td>
@@ -262,6 +277,7 @@
                 <td><span style="text-decoration: underline; white-space: pre;">                           </span></td>
                 <td><span style="text-decoration: underline; white-space: pre;">                           </span></td>
             </tr>
+            </tbody>
         </table>
 
     </div>

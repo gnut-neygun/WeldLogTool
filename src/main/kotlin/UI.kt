@@ -1,7 +1,9 @@
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,7 +27,8 @@ fun FilePickerButton(
     onFileChoosenChange: (File?) -> Unit,
     buttonText: String,
     iconFile: String,
-    filterExtension: String? = null
+    filterExtension: String? = null,
+    color: Color = Color.Yellow
 ) {
     val filePicker = JFileChooser()
     if (filterExtension != null) {
@@ -46,13 +49,14 @@ fun FilePickerButton(
                 }
                 else                        -> onFileChoosenChange(null)
             }
-        }, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Yellow)) {
+        }, colors = ButtonDefaults.buttonColors(backgroundColor = color)) {
             Text(
                 text = buttonText,
             )
             Icon(
                 painter = svgResource(iconFile),
-                contentDescription = null
+                contentDescription = null,
+                modifier = Modifier.size(22.dp)
             )
         }
     }
@@ -69,7 +73,7 @@ fun ContentRoot() {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         TopAppBar(title = {
             Text(
-                "CSV to PDF Conversion App"
+                "Swagelok Munich Weld Log Tool"
             )
         })
         Image(
@@ -82,12 +86,12 @@ fun ContentRoot() {
             fileChoosen = it
             statusTextState =
                 if (fileChoosen == null) defaultText else "You have choosen ${fileChoosen ?: "no file"} to convert."
-        }, buttonText = "Choose CSV  ", iconFile = "csv_file.svg", filterExtension = "csv")
+        }, buttonText = "Select CSV  ", iconFile = "csv_file.svg", filterExtension = "csv")
 
         FilePickerButton(onFileChoosenChange = {
             settings.savePath = it?.toPath() ?: System.getProperty("user.dir").let { Paths.get(it) }
             currentSettingTextState = "The current output folder is ${settings.savePath}"
-        }, buttonText = "Change Output Folder  ", iconFile = "csv_file.svg", filterExtension = null)
+        }, buttonText = "Change Output Folder  ", iconFile = "folder.svg", filterExtension = null, color = Color.Green)
 
         Row(
             modifier = Modifier.padding(16.dp),
@@ -98,13 +102,13 @@ fun ContentRoot() {
                     statusTextState = if (convertToPDF(fileChoosen, settings.savePath)) {
                         "You have successfully converted. The result is in ${settings.savePath}"
                     } else {
-                        "Conversion failed"
+                        "Conversion failed. Make sure you are not opening any PDFs in the output folder while converting."
                     }
                 },
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
             ) {
                 Text(
-                    text = "Convert   ",
+                    text = "Convert to PDF   ",
                 )
                 Icon(
                     painter = svgResource("start.svg"),
