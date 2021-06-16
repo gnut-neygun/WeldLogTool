@@ -1,0 +1,377 @@
+<html>
+<head>
+    <meta charset="UTF-8"></meta>
+    <style>
+        @font-face {
+            font-family: 'arial';
+            font-style: normal;
+            font-weight: normal;
+            src: url(fonts/ArialUnicodeMS.ttf);
+        }
+
+        @font-face {
+            font-family: 'arial';
+            font-style: normal;
+            font-weight: bold;
+            src: url(fonts/ARIALBD.ttf);
+        }
+
+        * {
+            font-family: arial;
+        }
+
+        @page {
+            size: a4 landscape;
+            @top-right {
+                content: 'Seite ' counter(page) ' von ' counter(pages);
+            }
+            @top-center {
+                content: element(header);
+            }
+            @bottom-center {
+                content: element(footer);
+            }
+            margin-top: 12em;
+            margin-bottom: 14em;
+            margin-left: 1em;
+            margin-right: 1em;
+        }
+
+        header {
+            position: running(header);
+        }
+
+        #footer {
+            position: running(footer);
+            text-align: center;
+            max-height: 12em;
+        }
+
+        #program_info {
+            width: 15%;
+            float: right;
+        }
+
+        * {
+            font-size: 12px
+        }
+
+        #table-label {
+            font-weight: bold;
+        }
+
+        .welding-table table {
+            margin: auto;
+            border-spacing: 15px;
+            clear: both;
+            border-collapse: collapse;
+            border-style: hidden;
+        }
+
+        .welding-table table td {
+            padding: 5px
+        }
+
+        .welding-table table td, .welding-table table th {
+            border: 1px solid black;
+        }
+
+        .datum_column {
+            min-width: 5em;
+        }
+
+        .zeit_column {
+            min-width: 3em;
+        }
+
+        .info-table table {
+            width: 80%;
+            border-spacing: 0;
+            float: left;
+        }
+
+        /*Table label*/
+        .info-table td:nth-child(odd) {
+            width: 8%;
+        }
+
+        /*Table data*/
+        .info-table td:nth-child(even) {
+        }
+
+        dd {
+            margin-left: 0px;
+            display: inline;
+        }
+
+        dt {
+            margin-left: 10px;
+            display: inline;
+        }
+
+        #hinweis-footer-left {
+            width: 48%;
+            float: left;
+            text-align: left;
+        }
+
+        #hinweis-footer-right {
+            width: 48%;
+            float: right;
+            text-align: left;
+        }
+
+    </style>
+</head>
+<body>
+<header>
+    <div class="info-table">
+        <table>
+            <tr>
+                <td>Project:</td>
+                <td><b th:text="${project_name}"></b></td>
+                <td>Auftragsnummer:</td>
+                <td th:text="${auftragsnummer}"></td>
+                <td>Interne Nummer:</td>
+                <td th:text="${interne_nummer}"></td>
+            </tr>
+            <tr>
+                <td>MFST Ref#:</td>
+                <td th:text="${mfst_ref}">BEST-MFST-02</td>
+                <td>Zeichnung:</td>
+                <td th:text="${zeichnung}">20002575</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Maschinentyp:</td>
+                <td th:text="${maschinentyp}">M200</td>
+                <td>Schweissprogramm:</td>
+                <td th:text="${schweissprogram}">12,7 x 1,32 Endress+Hauser</td>
+                <td>OD Schutzgas:</td>
+                <td th:text="${od_schutzgas}">Argon</td>
+            </tr>
+            <tr>
+                <td>Serien-Nr:</td>
+                <td th:text="${serien_nr}">5515</td>
+                <td>Schweisskopf:</td>
+                <td th:text="${schweisskopf}">8HPH</td>
+                <td>ID Schutzgas:</td>
+                <td th:text="${id_shutzgas}">Argon</td>
+            </tr>
+            <tr>
+                <td>Kalibrierdatum:</td>
+                <td th:text="${kalibrierdatum}">27.02.2020</td>
+            </tr>
+        </table>
+    </div>
+    <div id="program_info">
+        QMV xxx<br/>
+        CN <br/>
+        Version 1.0 <br/>
+        Datum: <span th:text="${#dates.format(standardDate, 'dd-MMMyyyy')}"></span>
+    </div>
+</header>
+<div id="footer">
+    <div>Komponentenbeschreibung</div>
+    <dl>
+        <dt>T =</dt>
+        <dd> Rohr</dd>
+
+        <dt>FE =</dt>
+        <dd>Klemmring</dd>
+
+        <dt>TEE =</dt>
+        <dd>Schw.T-Stück/Schw.Kreuzstück</dd>
+
+        <dt>R =</dt>
+        <dd>Schw.Reduzierer</dd>
+
+        <dt>90 =</dt>
+        <dd>Schw.90-Winkel</dd>
+
+        <dt>90 =</dt>
+        <dd>Schw.90-Winkel</dd>
+
+        <dt>45 =</dt>
+        <dd>Schw.45-Winkel</dd>
+
+        <dt>V =</dt>
+        <dd>Valve</dd>
+
+        <dt>G =</dt>
+        <dd>Schw.Adapter</dd>
+
+        <dt>ADF =</dt>
+        <dd>Aut.Schw.Adap.</dd>
+    </dl>
+    <div id="hinweis-footer-left">Hinweis A: Schweißungen
+        <p>Jede Schweißnaht muss in einer geeigneten Zeichnung eindeutig zuzuordnen sein.
+            Abgelehnte Schweißungen, welche Nachgeschweißt werden können, sollten mit einem 'R' am Ende gekennzeicnet
+            werden.
+            Abgelehnte Schweißungen, welche entfernt und ersetzt wurden, sollten mit einem 'A' am Ende gekennzeichnet
+            werden.
+            Schweißungen, welche aus anderen Gründen entfernt wurden, sollten mit dem Kommentar 'entfernt'
+            gekennzeichnet werden.
+            Die ersetzende Schweißung sollte die Nachfolgende sein.</p>
+    </div>
+    <div id="hinweis-footer-right">
+        <ol>
+            <li>
+                <ul>
+                    <li>VO = visuell, nur AD</li>
+                    <li>VI = visuell, AD und ID</li>
+                    <li>B = visuell, AD und Boroskop ID</li>
+                </ul>
+            </li>
+            <li>
+                Nicht einsehbare Schweißungen (ID) sollten mit dem Kommentar "Blind" versehen werden.
+                Alle anderen Anforderungen sollten im Kommentar festgehalten werden.
+            </li>
+        </ol>
+    </div>
+</div>
+<main>
+    <div class="welding-table">
+        <table>
+            <tr id="table-label">
+                <td>Schweißung#</td>
+                <td>Datum</td>
+                <td>Zeit</td>
+                <td>Schweisser ID</td>
+                <td>Beschreibung</td>
+                <td>Komponenten</td>
+                <td>AD/Wandstärke #1</td>
+                <td>HEAT #1</td>
+                <td>AD/Wandstärke #2</td>
+                <td>HEAT #2</td>
+                <td>Prüfmethode</td>
+                <td>Kommentare</td>
+            </tr>
+            <tr th:each="weld : ${entries}">
+                <td th:text="${weld[2]}">Schweißung#</td>
+                <td class="datum_column" th:text="${weld[0]}">Datum</td>
+                <td class="zeit_column" th:text="${weld[1]}">Zeit</td>
+                <td th:text="${weld[13]}">Schweisser</td>
+                <td>Schweißprogramm/WPS</td>
+                <td th:text="${weld[56]}+ '/'+ ${weld[58]}">Komponenten</td>
+                <td th:text="${weld[17]}+ '/'+${weld[18]}">AD/Wandstärke #1</td>
+                <td th:text="${weld[16]}">HEAT #1</td>
+                <td th:text="${weld[22]}+ '/'+ ${weld[23]}">AD/Wandstärke #2</td>
+                <td th:text="${weld[21]}">HEAT #2</td>
+                <td><span style="text-decoration: underline; white-space: pre;">                           </span></td>
+                <td><span style="text-decoration: underline; white-space: pre;">                           </span></td>
+            </tr>
+        </table>
+
+    </div>
+</main>
+<header>
+    <div class="info-table">
+        <table>
+            <tr>
+                <td>Project</td>
+                <td><b th:text="${project_name}"></b></td>
+                <td>Auftragsnummer</td>
+                <td th:text="${auftragsnummer}"></td>
+                <td>Interne Nummer</td>
+                <td th:text="${interne_nummer}"></td>
+            </tr>
+            <tr>
+                <td>MFST Ref#:</td>
+                <td th:text="${mfst_ref}">BEST-MFST-02</td>
+                <td>Zeichnung</td>
+                <td th:text="${zeichnung}">20002575</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Maschinentyp:</td>
+                <td th:text="${maschinentyp}">M200</td>
+                <td>Schweissprogramm:</td>
+                <td th:text="${schweissprogram}">12,7 x 1,32 Endress+Hauser</td>
+                <td>OD Schutzgas:</td>
+                <td th:text="${od_schutzgas}">Argon</td>
+            </tr>
+            <tr>
+                <td>Serien-Nr:</td>
+                <td th:text="${serien_nr}">5515</td>
+                <td>Schweisskopf:</td>
+                <td th:text="${schweisskopf}">8HPH</td>
+                <td>ID Schutzgas:</td>
+                <td th:text="${id_shutzgas}">Argon</td>
+            </tr>
+            <tr>
+                <td>Kalibrierdatum:</td>
+                <td th:text="${kalibrierdatum}">27.02.2020</td>
+            </tr>
+        </table>
+    </div>
+    <div id="program_info">
+        QMV xxx<br/>
+        CN <br/>
+        Version 1.0 <br/>
+        Datum: <span th:text="${#dates.format(standardDate, 'dd-MMMyyyy')}"></span>
+    </div>
+</header>
+<div id="footer">
+    <div>Komponentenbeschreibung</div>
+    <dl>
+        <dt>T =</dt>
+        <dd> Rohr</dd>
+
+        <dt>FE =</dt>
+        <dd>Klemmring</dd>
+
+        <dt>TEE =</dt>
+        <dd>Schw.T-Stück/Schw.Kreuzstück</dd>
+
+        <dt>R =</dt>
+        <dd>Schw.Reduzierer</dd>
+
+        <dt>90 =</dt>
+        <dd>Schw.90-Winkel</dd>
+
+        <dt>90 =</dt>
+        <dd>Schw.90-Winkel</dd>
+
+        <dt>45 =</dt>
+        <dd>Schw.45-Winkel</dd>
+
+        <dt>V =</dt>
+        <dd>Valve</dd>
+
+        <dt>G =</dt>
+        <dd>Schw.Adapter</dd>
+
+        <dt>ADF =</dt>
+        <dd>Aut.Schw.Adap.</dd>
+    </dl>
+    <div id="hinweis-footer-left">Hinweis A: Schweißungen
+        <p>Jede Schweißnaht muss in einer geeigneten Zeichnung eindeutig zuzuordnen sein.
+            Abgelehnte Schweißungen, welche Nachgeschweißt werden können, sollten mit einem 'R' am Ende gekennzeicnet
+            werden.
+            Abgelehnte Schweißungen, welche entfernt und ersetzt wurden, sollten mit einem 'A' am Ende gekennzeichnet
+            werden.
+            Schweißungen, welche aus anderen Gründen entfernt wurden, sollten mit dem Kommentar 'entfernt'
+            gekennzeichnet werden.
+            Die ersetzende Schweißung sollte die Nachfolgende sein.</p>
+    </div>
+    <div id="hinweis-footer-right">
+        <ol>
+            <li>
+                <ul>
+                    <li>VO = visuell, nur AD</li>
+                    <li>VI = visuell, AD und ID</li>
+                    <li>B = visuell, AD und Boroskop ID</li>
+                </ul>
+            </li>
+            <li>
+                Nicht einsehbare Schweißungen (ID) sollten mit dem Kommentar "Blind" versehen werden.
+                Alle anderen Anforderungen sollten im Kommentar festgehalten werden.
+            </li>
+        </ol>
+    </div>
+</div>
+</body>
+</html>
