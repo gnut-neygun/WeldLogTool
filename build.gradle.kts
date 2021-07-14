@@ -3,8 +3,8 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.4.30"
-    id("org.jetbrains.compose") version "0.3.1"
+    kotlin("jvm") version "1.5.10"
+    id("org.jetbrains.compose") version "0.5.0-build235"
 }
 
 group = "me.tung.nguyen"
@@ -23,11 +23,20 @@ dependencies {
     implementation("com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.8")
     // https://mvnrepository.com/artifact/org.thymeleaf/thymeleaf
     implementation("org.thymeleaf:thymeleaf:3.0.12.RELEASE")
+    testImplementation(platform("org.junit:junit-bom:5.7.2"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
 
 }
 
 tasks.withType<KotlinCompile>() {
     kotlinOptions.jvmTarget = "11"
+}
+
+tasks.test {
+    useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
+    }
 }
 
 compose.desktop {

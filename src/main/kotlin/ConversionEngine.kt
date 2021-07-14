@@ -11,13 +11,14 @@ import java.nio.file.Path
 import java.util.*
 
 //This enum class only serves as readable way to get the ordinal for the list entry in the CSV file
+@Suppress("unused", "EnumEntryName")
 enum class CSVHeader {
     Date, Time, Weld, Acceptability, Weld_Status, Procedure_Name, Procedure_Created_Date, Adjusted, Procedure_Description, Weld_Log_Description, PS_serial, PS_model, Programmer_Name, Welder_Name, Joint_Type_1, Material_Side_1, Heat_Code_Side_1, Diameter_Side_1, Wall_Side_1, Joint_Type_2, Material_Side_2, Heat_Code_Side_2, Diameter_Side_2, Wall_Side_2, Project_Name, Drawing_Name, Head_Type, Head_Serial, Electrode, Arc_Gap, Arc_Gap_Gauge, ID_Gas_Type, ID_Gas_Number, ID_Gas_Pressure, ID_Target_Flow, ID_Minimum_Flow, ID_Blast_Flow, ID_Purge_Method, Shield_Gas_Type, Shield_Gas_Number, Purge_OD_Flow, OD_Blast_Flow, Open_Field_1, Open_Field_2, Tack_Method_Setting, Button_pushed, AC_Input, Reserved1, Reserved2, Reserved3, Reserved4, Custom_field_value1, Interne_nummer, Custom_field_value3, Auftragsnummer
 }
 typealias CSVEntry = List<String>
 typealias CSVGroupKey = Pair<String, String> // in this case we want to group CSV by project name and procedure name
 
-fun processCSVFile(csvFile: File): Map<CSVGroupKey, List<CSVEntry>> {
+fun processCSVDataFile(csvFile: File): Map<CSVGroupKey, List<CSVEntry>> {
     val csvStringWithoutPreamble = "\"Date" + csvFile.readText().substringAfter("Date")
     val csvData = csvReader().readAll(csvStringWithoutPreamble).let {
         it.subList(1, it.size) // Skip the first line as it is the header line}
@@ -27,15 +28,19 @@ fun processCSVFile(csvFile: File): Map<CSVGroupKey, List<CSVEntry>> {
     }
 }
 
-fun generateKeyValueMap(groupKey: CSVGroupKey, eintrage: List<CSVEntry>): Map<String, Any> {
+fun processCSVNumberWPSFile(csvFile: File): Map<String, String> {
+    val wpsMap = mutableMapOf<String, String>()
+    csvFile.readLines().forEach { entry ->
+        val contents = entry.split(";")
+        wpsMap[contents[1]] = contents[0]
+    }
+    return wpsMap
+}
+
+fun generateKeyValueMap(groupKey: CSVGroupKey, eintrage: List<CSVEntry>): MutableMap<String, Any> {
     val (projectName, weldProgram) = groupKey
     val randomEintrag =
         eintrage[0] //Get some random eintrag to get the other field info, fields like auftragsnummer should be the same accross eintrage of the same project
-    if (eintrage.size > 1) {
-        val otherEintrag = eintrage[1]
-        //Check for consistency
-        println("Auftragsnummer is ${if (otherEintrag[CSVHeader.Auftragsnummer.ordinal] == randomEintrag[CSVHeader.Auftragsnummer.ordinal]) "the same" else "different"} across the first and second entries of project $groupKey")
-    }
     val keyValueMap = mutableMapOf<String, Any>()
     keyValueMap["project_name"] = projectName
     keyValueMap["auftragsnummer"] = randomEintrag[CSVHeader.Auftragsnummer.ordinal]
@@ -63,10 +68,13 @@ fun convertToPDF(csvFile: File?, outputFolder: Path): Boolean {
     templateResolver.suffix = ".html"
     val templateEngine = TemplateEngine()
     templateEngine.setTemplateResolver(templateResolver)
-    val csvGrouped = processCSVFile(csvFile)
+    val csvGrouped = processCSVDataFile(csvFile)
+    val wpsMap = processCSVNumberWPSFile(File("WpsList.csv"))
     for ((groupKey, eintrage) in csvGrouped) {
         val (projectName, weldProgram) = groupKey
         val keyValueMap = generateKeyValueMap(groupKey, eintrage)
+        //add wps number to the keyvalueMap
+        keyValueMap["wpsNumber"] = wpsMap[groupKey.second] ?: "WPS nicht gefunden"
         val templateContext = Context(Locale.GERMAN, keyValueMap as Map<String, Any>?)
         templateContext.setVariable("standardDate", Date())
         val outputHTML = templateEngine.process("_base", templateContext)

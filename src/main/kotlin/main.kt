@@ -14,7 +14,7 @@ fun main() {
         title = "Swagelok Munich Weld Log Tool",
         icon = ImageIO.read({}::class.java.getResource("app-icon.png")),
         resizable = true,
-        size = IntSize(700, 700)
+        size = IntSize(800, 750)
     ) {
         Surface(modifier = Modifier.fillMaxSize()) {
             MaterialTheme() {

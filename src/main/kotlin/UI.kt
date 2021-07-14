@@ -12,59 +12,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.svgResource
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 import java.nio.file.Paths
-import javax.swing.JFileChooser
-import javax.swing.filechooser.FileNameExtensionFilter
 
-
-/**
- * fileExtensionFilter null means directory mode
- */
-@OptIn(ExperimentalStdlibApi::class)
-@Composable
-fun FilePickerButton(
-    onFileChoosenChange: (File?) -> Unit,
-    buttonText: String,
-    iconFile: String,
-    filterExtension: String? = null,
-    color: Color = Color.Yellow
-) {
-    val filePicker = JFileChooser()
-    if (filterExtension != null) {
-        val filter = FileNameExtensionFilter("${filterExtension.uppercase()} files", "csv")
-        filePicker.fileFilter = filter
-    } else {
-        filePicker.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
-    }
-
-    Row(
-        modifier = Modifier.padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Button(onClick = {
-            when (filePicker.showOpenDialog(null)) {
-                JFileChooser.APPROVE_OPTION -> {
-                    onFileChoosenChange(filePicker.selectedFile)
-                }
-                else                        -> onFileChoosenChange(null)
-            }
-        }, colors = ButtonDefaults.buttonColors(backgroundColor = color)) {
-            Text(
-                text = buttonText,
-            )
-            Icon(
-                painter = svgResource(iconFile),
-                contentDescription = null,
-                modifier = Modifier.size(22.dp)
-            )
-        }
-    }
-}
 
 @Composable
 fun ContentRoot() {
+    val scope = rememberCoroutineScope()
     var fileChoosen: File? by remember { mutableStateOf(null) }
+    var isLoading: Boolean by remember { mutableStateOf(false) }
     val settings = Setting()
     val settingDefaultText = "The current output folder is ${settings.savePath}"
     val defaultText = "You have not choosen any file to convert."
@@ -99,10 +57,14 @@ fun ContentRoot() {
         ) {
             Button(
                 onClick = {
-                    statusTextState = if (convertToPDF(fileChoosen, settings.savePath)) {
-                        "You have successfully converted. The result is in ${settings.savePath}"
-                    } else {
-                        "Conversion failed. Make sure you are not opening any PDFs in the output folder while converting."
+                    scope.launch(Dispatchers.IO) {
+                        isLoading = true
+                        statusTextState = if (convertToPDF(fileChoosen, settings.savePath)) {
+                            "You have successfully converted. The result is in ${settings.savePath}"
+                        } else {
+                            "Conversion failed. Make sure you are not opening any PDFs in the output folder while converting."
+                        }
+                        isLoading = false
                     }
                 },
                 colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
@@ -112,11 +74,14 @@ fun ContentRoot() {
                 )
                 Icon(
                     painter = svgResource("start.svg"),
+                    modifier = Modifier.size(24.dp),
                     contentDescription = null
                 )
             }
         }
         Text(modifier = Modifier.padding(16.dp), text = statusTextState)
         Text(modifier = Modifier.padding(16.dp), text = currentSettingTextState)
+        if (isLoading)
+            CircularProgressIndicator()
     }
 }

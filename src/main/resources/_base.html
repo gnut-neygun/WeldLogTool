@@ -177,10 +177,9 @@
         </table>
     </div>
     <div id="program_info">
-        QMV xxx<br/>
-        CN <br/>
+        Dokument FB 067 <br/>
         Version 1.0 <br/>
-        Datum <span th:text="${#dates.format(standardDate, 'dd-MMMyyyy')}"></span> <br/>
+        Datum 20.07.2021 <br/>
         Seite <span id="page_number"></span> von <span id="page_count"></span>
     </div>
 </header>
@@ -268,7 +267,7 @@
                 <td class="datum_column" th:text="${weld[0]}">Datum</td>
                 <td class="zeit_column" th:text="${weld[1]}">Zeit</td>
                 <td th:text="${weld[13]}">Schweisser</td>
-                <td>Schweißprogramm/WPS</td>
+                <td th:text="${wpsNumber}">Schweißprogramm/WPS</td>
                 <td th:text="${weld[56]}+ '/'+ ${weld[58]}">Komponenten</td>
                 <td th:text="${weld[17]}+ '/'+${weld[18]}">AD/Wandstärke #1</td>
                 <td th:text="${weld[16]}">HEAT #1</td>
@@ -324,10 +323,7 @@
         </table>
     </div>
     <div id="program_info">
-        QMV xxx<br/>
-        CN <br/>
-        Version 1.0 <br/>
-        Datum <span th:text="${#dates.format(standardDate, 'dd-MMMyyyy')}"></span> <br/>
+        Datum 20 Juli 2021 <br/>
         Seite <span id="page_number"></span> von <span id="page_count"></span>
     </div>
 </header>
