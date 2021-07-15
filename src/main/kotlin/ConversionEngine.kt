@@ -74,7 +74,7 @@ fun convertToPDF(csvFile: File?, outputFolder: Path): Boolean {
         val (projectName, weldProgram) = groupKey
         val keyValueMap = generateKeyValueMap(groupKey, eintrage)
         //add wps number to the keyvalueMap
-        keyValueMap["wpsNumber"] = wpsMap[groupKey.second] ?: "WPS nicht gefunden"
+        keyValueMap["wpsNumber"] = wpsMap[groupKey.second] ?: "" //Processing will be done in HTML template
         val templateContext = Context(Locale.GERMAN, keyValueMap as Map<String, Any>?)
         templateContext.setVariable("standardDate", Date())
         val outputHTML = templateEngine.process("_base", templateContext)
@@ -82,7 +82,11 @@ fun convertToPDF(csvFile: File?, outputFolder: Path): Boolean {
         val cleanedProjectName = projectName.replace("""\s|\\|/""".toRegex(), "_")
         val auftragsnummer = keyValueMap["auftragsnummer"]
         val interneNummer = keyValueMap["interne_nummer"]
-        val pdfName = "${cleanedProjectName}_${auftragsnummer}_${interneNummer}_${weldProgram}.pdf"
+        val pdfName = if (wpsMap[groupKey.second] != null) {
+            "${cleanedProjectName}_${auftragsnummer}_${interneNummer}_${weldProgram}.pdf"
+        } else {
+            "WPS NICHT GEFUNDEN - ${cleanedProjectName}_${auftragsnummer}_${interneNummer}_${weldProgram}.pdf"
+        }
         try {
             FileOutputStream("$outputFolder/$pdfName").use { os ->
                 val builder = PdfRendererBuilder()

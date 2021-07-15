@@ -41,8 +41,14 @@ tasks.test {
 
 compose.desktop {
     application {
+        fromFiles()
         mainClass = "MainKt"
         nativeDistributions {
+            val copyTask by tasks.register<Copy>("copyCSVAndReadMe") {
+                from(project.fileTree("/") { include("test.csv", "WpsList.csv", "PleaseReadMeFirst.txt") })
+                into(outputBaseDir.dir("main/app/MyTool"))
+            }
+            project.afterEvaluate { tasks.named("createDistributable").get().dependsOn(copyTask) }
             macOS {
                 iconFile.set(File("build/resources/main/app-icon.png"))
                 // macOS specific options
@@ -61,4 +67,8 @@ compose.desktop {
             packageVersion = "1.0.0"
         }
     }
+}
+
+tasks.register("testGradle") {
+    println(tasks.names)
 }
