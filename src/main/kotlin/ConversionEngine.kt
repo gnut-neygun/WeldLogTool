@@ -91,7 +91,12 @@ fun convertToPDF(csvFile: File?, outputFolder: Path): Boolean {
             FileOutputStream("$outputFolder/$pdfName").use { os ->
                 val builder = PdfRendererBuilder()
                 builder.useFastMode()
-                val baseURI = "file:" + {}::class.java.getResource("logo.png").file
+                val resourcePath = {}::class.java.getResource("logo.png")!!.file.also { System.err.println(it) }
+                val baseURI = if (resourcePath.endsWith(".jar!/logo.png")) {
+                    "jar:$resourcePath"
+                } else {
+                    "file:$resourcePath"
+                }
                 builder.withHtmlContent(outputHTML, baseURI) //Second arg just means path to resource folder
                 builder.toStream(os)
                 builder.run()

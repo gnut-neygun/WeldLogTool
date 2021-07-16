@@ -48,7 +48,10 @@ compose.desktop {
                 from(project.fileTree("/") { include("test.csv", "WpsList.csv", "PleaseReadMeFirst.txt") })
                 into(outputBaseDir.dir("main/app/MyTool"))
             }
-            project.afterEvaluate { tasks.named("createDistributable").get().dependsOn(copyTask) }
+            project.afterEvaluate {
+                val distributableTask = tasks.named("createDistributable").get()
+                distributableTask.finalizedBy(copyTask)
+            }
             macOS {
                 iconFile.set(File("build/resources/main/app-icon.png"))
                 // macOS specific options
