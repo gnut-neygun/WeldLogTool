@@ -79,16 +79,16 @@ fun convertToPDF(csvFile: File?, outputFolder: Path): Boolean {
         templateContext.setVariable("standardDate", Date())
         val outputHTML = templateEngine.process("_base", templateContext)
         //The project name needs to be cleaned so that it doesn't contain special character for the pdf filename.
-        val cleanedProjectName = projectName.replace("""\s|\\|/""".toRegex(), "_")
         val auftragsnummer = keyValueMap["auftragsnummer"]
         val interneNummer = keyValueMap["interne_nummer"]
         val pdfName = if (wpsMap[groupKey.second] != null) {
-            "${cleanedProjectName}_${auftragsnummer}_${interneNummer}_${weldProgram}.pdf"
+            "${projectName}_${auftragsnummer}_${interneNummer}_${weldProgram}.pdf"
         } else {
-            "WPS NICHT GEFUNDEN - ${cleanedProjectName}_${auftragsnummer}_${interneNummer}_${weldProgram}.pdf"
+            "WPS NICHT GEFUNDEN - ${projectName}_${auftragsnummer}_${interneNummer}_${weldProgram}.pdf"
         }
+        val cleanedPdfName = pdfName.replace("""\s|\\|/""".toRegex(), "-")
         try {
-            FileOutputStream("$outputFolder/$pdfName").use { os ->
+            FileOutputStream("$outputFolder/$cleanedPdfName").use { os ->
                 val builder = PdfRendererBuilder()
                 builder.useFastMode()
                 val resourcePath = {}::class.java.getResource("logo.png")!!.file.also { System.err.println(it) }
