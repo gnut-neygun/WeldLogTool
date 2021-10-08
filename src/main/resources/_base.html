@@ -271,7 +271,13 @@
                 <td th:text="${weld[16]}">HEAT #1</td>
                 <td th:text="${weld[22]}+ '/'+ ${weld[23]}">AD/Wandstaerke #2</td>
                 <td th:text="${weld[21]}">HEAT #2</td>
-                <td><span style="text-decoration: underline; white-space: pre;">                           </span></td>
+                <td>
+                    <span th:if="${#strings.containsIgnoreCase(weld[4],'weld complete')}">VO</span>
+                    <span style="text-decoration: underline; white-space: pre;"
+                          th:if="${#strings.containsIgnoreCase(weld[4],'weld complete')}">                </span>
+                    <span style="text-decoration: underline; white-space: pre;"
+                          th:unless="${#strings.containsIgnoreCase(weld[4],'weld complete')}">                        </span>
+                </td>
                 <td th:text="${weld[4]}"></td>
             </tr>
             </tbody>
