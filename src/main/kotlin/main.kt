@@ -33,7 +33,7 @@ fun main() {
     val amIinAJar = {}::class.java.getResource("logo.png")!!.file.endsWith(".jar!/logo.png")
     if (amIinAJar)
         configureStdErr() // for logging
-    UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel") //Set the theme for the file picker
+    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()) //Set the theme for the file picker
     Window(
         title = "Swagelok Munich Weld Log Tool",
         icon = ImageIO.read({}::class.java.getResource("app-icon.png")),
