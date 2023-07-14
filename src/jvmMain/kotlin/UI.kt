@@ -9,8 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.res.svgResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,7 +34,7 @@ fun ContentRoot() {
             )
         })
         Image(
-            bitmap = imageResource("logo.png"), // ImageBitmap
+            painter = painterResource("logo.png"), // ImageBitmap
             contentDescription = null,
             modifier = Modifier.padding(16.dp)
         )
@@ -73,7 +72,7 @@ fun ContentRoot() {
                     text = "Convert to PDF   ",
                 )
                 Icon(
-                    painter = svgResource("start.svg"),
+                    painter = painterResource("start.svg"),
                     modifier = Modifier.size(24.dp),
                     contentDescription = null
                 )

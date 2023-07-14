@@ -1,13 +1,11 @@
-import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.5.10"
-    id("org.jetbrains.compose") version "0.5.0-build235"
+    kotlin("multiplatform")
+    id("org.jetbrains.compose")
 }
 
-group = "me.tung.nguyen"
+group = "weldlogtool"
 version = "1.0"
 
 repositories {
@@ -16,26 +14,31 @@ repositories {
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev") }
 }
 
-dependencies {
-    implementation(compose.desktop.currentOs)
-    implementation("org.apache.pdfbox:pdfbox:2.0.23")
-    implementation("com.github.doyaaaaaken:kotlin-csv-jvm:0.15.1")
-    implementation("com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.8")
-    // https://mvnrepository.com/artifact/org.thymeleaf/thymeleaf
-    implementation("org.thymeleaf:thymeleaf:3.0.12.RELEASE")
-    testImplementation(platform("org.junit:junit-bom:5.7.2"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
+kotlin {
+    jvm {
+        jvmToolchain(11)
+        withJava()
+    }
+    sourceSets {
+        val jvmMain by getting {
+            dependencies {
 
-}
-
-tasks.withType<KotlinCompile>() {
-    kotlinOptions.jvmTarget = "11"
-}
-
-tasks.test {
-    useJUnitPlatform()
-    testLogging {
-        events("passed", "skipped", "failed")
+                implementation(compose.desktop.currentOs)
+                implementation("org.apache.pdfbox:pdfbox:2.0.23")
+                implementation("com.github.doyaaaaaken:kotlin-csv-jvm:0.15.1")
+                implementation("com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.8")
+                // https://mvnrepository.com/artifact/org.thymeleaf/thymeleaf
+                implementation("org.thymeleaf:thymeleaf:3.0.12.RELEASE")
+//                testImplementation(platform("org.junit:junit-bom:5.7.2"))
+//                testImplementation("org.junit.jupiter:junit-jupiter")
+            }
+        }
+        val jvmTest by getting {
+            dependencies {
+                implementation("org.jetbrains.kotlin:kotlin-test")
+                implementation("org.jetbrains.kotlin:kotlin-test-junit")
+            }
+        }
     }
 }
 
@@ -45,7 +48,7 @@ compose.desktop {
         mainClass = "MainKt"
         nativeDistributions {
             val copyTask by tasks.register<Copy>("copyCSVAndReadMe") {
-                from(project.fileTree("/") { include("test.csv", "WpsList.csv", "PleaseReadMeFirst.txt") })
+                from(project.fileTree("/") { include("test.csv", "WpsList.csv", "README.md") })
                 into(outputBaseDir.dir("main/app/MyTool"))
             }
             project.afterEvaluate {
@@ -70,8 +73,4 @@ compose.desktop {
             packageVersion = "1.0.0"
         }
     }
-}
-
-tasks.register("testGradle") {
-    println(tasks.names)
 }
