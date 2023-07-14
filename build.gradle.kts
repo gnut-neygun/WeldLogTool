@@ -27,10 +27,7 @@ kotlin {
                 implementation("org.apache.pdfbox:pdfbox:2.0.23")
                 implementation("com.github.doyaaaaaken:kotlin-csv-jvm:0.15.1")
                 implementation("com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.8")
-                // https://mvnrepository.com/artifact/org.thymeleaf/thymeleaf
                 implementation("org.thymeleaf:thymeleaf:3.0.12.RELEASE")
-//                testImplementation(platform("org.junit:junit-bom:5.7.2"))
-//                testImplementation("org.junit.jupiter:junit-jupiter")
             }
         }
         val jvmTest by getting {

@@ -58,9 +58,9 @@ fun generateKeyValueMap(groupKey: CSVGroupKey, eintrage: List<CSVEntry>): Mutabl
     return keyValueMap
 }
 
-fun convertToPDF(csvFile: File?, outputFolder: Path): Boolean {
+fun convertToPDF(csvFile: File?, outputFolder: Path) {
     if (csvFile == null)
-        return false
+        throw IllegalArgumentException("CSV file cannot be null")
     //Initialize the ThymeleafEngine
     val templateResolver = ClassLoaderTemplateResolver()
     //Thymeleaf uses ClassLoader.getResourceAsStream method to locate the template file. This methods expects just a filename, so prefix / is enough. (and necessary)
@@ -87,24 +87,18 @@ fun convertToPDF(csvFile: File?, outputFolder: Path): Boolean {
             "WPS NICHT GEFUNDEN - ${projectName}_${auftragsnummer}_${interneNummer}_${weldProgram}.pdf"
         }
         val cleanedPdfName = pdfName.replace("""\s|\\|/""".toRegex(), "-")
-        try {
-            FileOutputStream("$outputFolder/$cleanedPdfName").use { os ->
-                val builder = PdfRendererBuilder()
-                builder.useFastMode()
-                val resourcePath = {}::class.java.getResource("logo.png")!!.file.also { System.err.println(it) }
-                val baseURI = if (resourcePath.endsWith(".jar!/logo.png")) {
-                    "jar:$resourcePath"
-                } else {
-                    "file:$resourcePath"
-                }
-                builder.withHtmlContent(outputHTML, baseURI) //Second arg just means path to resource folder
-                builder.toStream(os)
-                builder.run()
+        FileOutputStream("$outputFolder/$cleanedPdfName").use { os ->
+            val builder = PdfRendererBuilder()
+            builder.useFastMode()
+            val resourcePath = {}::class.java.getResource("logo.png")!!.file.also { System.err.println(it) }
+            val baseURI = if (resourcePath.endsWith(".jar!/logo.png")) {
+                "jar:$resourcePath"
+            } else {
+                "file:$resourcePath"
             }
-        } catch (exception: Exception) {
-            exception.printStackTrace()
-            return false
+            builder.withHtmlContent(outputHTML, baseURI) //Second arg just means path to resource folder
+            builder.toStream(os)
+            builder.run()
         }
     }
-    return true
 }

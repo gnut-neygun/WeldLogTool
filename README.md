@@ -1,6 +1,16 @@
 # How to build
 
-- Gradle
+- Have a Java Development Kit installed (11 or higher)
+- https://www.oracle.com/de/java/technologies/downloads/
+- Cross compiling is not supported, so to build for Windows, you need to build on Windows, same for Linux / MacOS
+- Cd to the project and run:
+- `./gradlew createDistributable`
+- First time build maybe slower because gradle wrapper is trying to download gradle and all of the dependencies
+- It would be built in `build/compose/binaries` folder
+- There are other options too (create an installer / uberjar), check:
+- `https://github.com/JetBrains/compose-multiplatform/blob/master/tutorials/Native_distributions_and_local_execution/README.md`
+- For development, run:
+- `./gradlew run`
 
 # How to use
 

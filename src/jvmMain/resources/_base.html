@@ -139,7 +139,7 @@
     <div class="info-table">
         <table>
             <tr>
-                <td>Project:</td>
+                <td>Projekt:</td>
                 <td><b th:text="${project_name}"></b></td>
                 <td>Auftragsnummer:</td>
                 <td th:text="${auftragsnummer}"></td>
@@ -147,7 +147,7 @@
                 <td th:text="${interne_nummer}"></td>
             </tr>
             <tr>
-                <td>Welder-ID:</td>
+                <td>Schweißer:</td>
                 <td th:text="${mfst_ref}">BEST-MFST-02</td>
                 <td>Zeichnung:</td>
                 <td th:text="${zeichnung}">20002575</td>
@@ -247,9 +247,8 @@
                 <th>Schweissung#</th>
                 <th>Datum</th>
                 <th>Zeit</th>
-                <th>Schweisser ID</th>
                 <th>WPS Nummer</th>
-                <th>Komponenten</th>
+                <th>Komponente #1&amp;#2</th>
                 <th>AD/Wandstaerke #1</th>
                 <th>HEAT #1</th>
                 <th>AD/Wandstaerke #2</th>
@@ -263,16 +262,15 @@
                 <td th:text="${weld[2]}">Schweissung#</td>
                 <td class="datum_column" th:text="${weld[0]}">Datum</td>
                 <td class="zeit_column" th:text="${weld[1]}">Zeit</td>
-                <td th:text="${weld[13]}">Schweisser</td>
                 <td th:if="${wpsNumber == ''}"><span style="background-color: indianred">WPS nicht gefunden</span></td>
                 <td th:text="${wpsNumber}" th:unless="${wpsNumber == ''}">WPS Nummer</td>
-                <td th:text="${weld[56]}+ '/'+ ${weld[58]}">Komponenten</td>
+                <td th:text="${weld[56]}+ '/'+ ${weld[58]}">Komponente #1&amp;#2</td>
                 <td th:text="${weld[17]}+ '/'+${weld[18]}">AD/Wandstaerke #1</td>
                 <td th:text="${weld[16]}">HEAT #1</td>
                 <td th:text="${weld[22]}+ '/'+ ${weld[23]}">AD/Wandstaerke #2</td>
                 <td th:text="${weld[21]}">HEAT #2</td>
                 <td>
-                    <span th:if="${#strings.containsIgnoreCase(weld[4],'weld complete')}">VO</span>
+                    <span th:if="${#strings.containsIgnoreCase(weld[4],'weld complete')}"></span>
                     <span style="text-decoration: underline; white-space: pre;"
                           th:if="${#strings.containsIgnoreCase(weld[4],'weld complete')}">                </span>
                     <span style="text-decoration: underline; white-space: pre;"

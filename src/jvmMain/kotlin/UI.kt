@@ -24,7 +24,7 @@ fun ContentRoot() {
     var isLoading: Boolean by remember { mutableStateOf(false) }
     val settings = Setting()
     val settingDefaultText = "The current output folder is ${settings.savePath}"
-    val defaultText = "You have not choosen any file to convert."
+    val defaultText = "You have not chosen any file to convert."
     var statusTextState by remember { mutableStateOf(defaultText) }
     var currentSettingTextState by remember { mutableStateOf(settingDefaultText) }
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -58,10 +58,12 @@ fun ContentRoot() {
                 onClick = {
                     scope.launch(Dispatchers.IO) {
                         isLoading = true
-                        statusTextState = if (convertToPDF(fileChoosen, settings.savePath)) {
-                            "You have successfully converted. The result is in ${settings.savePath}"
-                        } else {
-                            "Conversion failed. Make sure you are not opening any PDFs in the output folder while converting."
+                        statusTextState = try {
+                            convertToPDF(fileChoosen, settings.savePath)
+                            "Conversion succeeded. The result is in ${settings.savePath}"
+                        } catch (e: Exception) {
+                            "Conversion failed. Make sure you are not opening any PDFs in the output folder while " +
+                                    "converting. Error detail: ${e.message}"
                         }
                         isLoading = false
                     }
